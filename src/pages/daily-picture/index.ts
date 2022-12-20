@@ -1,1 +1,1 @@
-export { DailyPicture } from "./daily-picture";
+export { default } from "./daily-picture";
