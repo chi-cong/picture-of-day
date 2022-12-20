@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Home: React.FC = () => {
+export const Home: React.FC = () => {
   return (
     <>
       <h2>Home</h2>
@@ -9,5 +9,3 @@ const Home: React.FC = () => {
     </>
   );
 };
-
-export default Home;

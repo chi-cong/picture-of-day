@@ -1,16 +1,16 @@
 import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
+import { Router, MultiRoute, SingleRoute } from "./lib/react-router";
+import { Home } from "./pages/home";
 import "./App.css";
 
 function App() {
   const DailyPicture = React.lazy(() => import("./pages/daily-picture"));
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route
+    <Router>
+      <MultiRoute>
+        <SingleRoute path='/' element={<Home />} />
+        <SingleRoute
           path='daily-picture'
           element={
             <Suspense>
@@ -18,8 +18,8 @@ function App() {
             </Suspense>
           }
         />
-      </Routes>
-    </BrowserRouter>
+      </MultiRoute>
+    </Router>
   );
 }
 
