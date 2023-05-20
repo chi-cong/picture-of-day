@@ -3,10 +3,6 @@ body {
   padding: 0;
   color: #262626;
 }
-h1 {
-  text-align: center;
-  text-transform: capitalize;
-}
 .main-section {
   display: flex;
   flex-direction: column;
