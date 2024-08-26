@@ -1,26 +1,30 @@
-import React, { Suspense } from "react";
-import { Router, MultiRoute, SingleRoute } from "./lib/react-router";
+import React, { Suspense, lazy } from "react";
+import {
+  createBrowserRouter,
+  IRoute,
+  RouterProvider,
+} from "./lib/react-router";
 import { Home } from "./pages/home";
+import DailyPicture from "./pages/daily-picture";
+import DailyDetail from "./pages/daily-picture/daily-detail";
 import "./App.css";
 
 function App() {
-  const DailyPicture = React.lazy(() => import("./pages/daily-picture"));
+  const routes: IRoute[] = [
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "daily-picture",
+      element: <DailyPicture />,
+      children: [{ path: ":date", element: <DailyDetail /> }],
+    },
+  ];
 
-  return (
-    <Router>
-      <MultiRoute>
-        <SingleRoute path='/' element={<Home />} />
-        <SingleRoute
-          path='daily-picture'
-          element={
-            <Suspense>
-              <DailyPicture />
-            </Suspense>
-          }
-        />
-      </MultiRoute>
-    </Router>
-  );
+  const router = createBrowserRouter(routes);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;

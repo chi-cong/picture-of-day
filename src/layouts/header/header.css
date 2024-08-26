@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: #262626;
+}
+header {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+header h1 {
+  text-align: center;
+  text-transform: capitalize;
+  border-bottom: 3px solid #4096ff;
+}
+/*# sourceMappingURL=header.css.map */
