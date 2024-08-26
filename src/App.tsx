@@ -18,7 +18,7 @@ function App() {
     {
       path: "daily-picture",
       element: <DailyPicture />,
-      // children: [{ path: ":date", element: <DailyDetail /> }],
+      children: [{ path: ":date", element: <DailyDetail /> }],
     },
   ];
 

@@ -13,37 +13,11 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-.main-section .date-container {
+.main-section .date-form {
+  width: 100%;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
+  align-items: center;
   gap: 10px;
-  width: 100%;
-}
-.main-section .date-container .date-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  height: 2.5rem;
-  padding: 5px;
-  box-sizing: border-box;
-}
-.main-section .date-container .date {
-  border: solid 1px #4096ff;
-  border-radius: 5px;
-}
-.main-section .main-content {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.main-section .main-content .picture {
-  width: 50%;
-}
-.main-section .main-content .detail {
-  width: 45%;
-  border: solid 1px #4096ff;
-  border-radius: 5px;
 }
 /*# sourceMappingURL=daily-picture.css.map */

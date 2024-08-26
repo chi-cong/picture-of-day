@@ -1,10 +1,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { log } from "console";
 
+// empty store at initial loading
 export const store = configureStore({
   reducer: {},
 });
 
+// create a property contains all lazy-loaded reducer
 (store as Record<string, any>).asyncReducer = {};
 
 export const addReducer = (key: string, reducer: any): boolean => {

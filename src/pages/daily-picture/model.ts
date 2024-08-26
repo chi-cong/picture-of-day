@@ -1,6 +1,5 @@
+import { IApod } from "../../services/apod-model";
+
 export interface IState {
-  date: string;
-  media: string;
-  detail: string;
-  copyright: string;
+  apiState: IApod;
 }

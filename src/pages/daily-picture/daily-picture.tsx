@@ -1,8 +1,11 @@
-import React, { Suspense, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+// services
 import { getAPOD } from "../../services/apod-api";
 import { IApod } from "../../services/apod-model";
+// types, interfaces
 import { IState } from "./model";
+import { IDateForm } from "./daily-picture-model";
+// libraries
 import {
   PayloadAction,
   addNewSlice,
@@ -11,74 +14,109 @@ import {
   getSliceAction,
   RootState,
 } from "../../lib/redux";
+import { Toaster, showErrorToast } from "../../lib/react-hot-toast";
 import { Header } from "../../layouts";
-import { DateContainer } from "../../components/date-container";
+import { useForm, Controller, SubmitHandler } from "../../lib/react-hook-form";
+import { useNavigate, Outlet } from "../../lib/react-router";
+import { Link } from "../../lib/react-router";
+import { dateHandler, Dayjs } from "../../lib/dayjs";
+// components
+import { SharedDatePicker } from "../../components/share-date-picker";
+import { SharedButton } from "../../components/shared-button";
+// others
 import "./daily-picture.css";
 
-const initState: Record<string, string> = {
-  copyright: "abc",
-  date: "4-11-2022",
-  media_type: "",
-  explanation: "",
-  hdurl: "",
-  service_version: "",
-  title: "",
-  url: "",
+const initState: IState = {
+  apiState: {
+    copyright: "",
+    date: "",
+    media_type: "",
+    explanation: "",
+    hdurl: "",
+    service_version: "",
+    title: "",
+    url: "",
+  },
 };
 
 const reducers: Record<string, any> = {
-  updateData: (state: IApod, action: PayloadAction<IApod>) => {
-    state.copyright = action.payload.copyright;
-    state.date = action.payload.date;
-
-    // return state;
+  updateData: (state: any, action: PayloadAction<IState>) => {
+    state.apiState = action.payload.apiState;
   },
 };
 
 const DailyPicture: React.FC = () => {
-  const apodSlice = addNewSlice("dailyState", initState, reducers);
+  // redux
+  const apodSlice = addNewSlice<IState>("dailyState", initState, reducers);
   const apodSliceActions = getSliceAction(apodSlice);
-  const day = useSelector((state: RootState) => state.dailyState);
+  const dailyState: IState = useSelector(
+    (state: RootState) => state.dailyState
+  );
   const dispatch = useDispatch();
 
+  const { control, handleSubmit } = useForm<IDateForm>();
+  const formRef = useRef<any>(null);
+
+  // save api data
   const saveData = (data: IApod): void => {
-    dispatch(apodSliceActions.updateData(data));
+    dispatch(apodSliceActions.updateData({ apiState: data }));
   };
 
-  const [apod, setApod] = useState<IApod | null | undefined>(undefined);
+  const callApodApi = (dateQuery?: string) => {
+    getAPOD(dateQuery ? dateQuery : "")
+      .then((respond) => {
+        // get data and navigate to child route
+        saveData(respond);
+        navigate(`/daily-picture/${dailyState.apiState.date}`);
+      })
+      .catch(() => {
+        showErrorToast("there's an error, please try again");
+      });
+  };
+
+  // add navigator
+  const navigate = useNavigate();
+  const submitDate: SubmitHandler<IDateForm> = (data, e) => {
+    e?.preventDefault();
+    const dateString = `${data.date.year()}-${data.date.month()}-${data.date.day()}`;
+    callApodApi(dateString);
+  };
+
   useEffect(() => {
-    // getAPOD()
-    //   .then((respond) => {
-    //     saveData(respond);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    callApodApi();
   }, []);
+
   return (
     <>
-      <Header />
+      <Toaster />
+      <h1>{}</h1>
+      <Header title='astronomy picture of day' />
       <section className='main-section'>
-        <DateContainer />
-        <div className='main-content'>
-          <div className='picture'>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Porro
-              sunt itaque sint quaerat rerum alias delectus minus explicabo ea
-              tenetur hic fugit, beatae commodi voluptatibus illo! Amet officia
-              fugit maiores.
-            </p>
-          </div>
-          <div className='detail'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos
-              possimus eaque fuga obcaecati ullam eius in quas, repudiandae est
-              architecto quaerat ea, recusandae magnam reiciendis itaque optio
-              aspernatur excepturi corporis?
-            </p>
-          </div>
-        </div>
-        <Link to={"/"}>Back to home</Link>
+        <form
+          ref={formRef}
+          className='date-form'
+          onSubmit={handleSubmit(submitDate)}
+        >
+          <Controller
+            control={control}
+            name='date'
+            render={({ field: { onChange, value } }) => (
+              <SharedDatePicker
+                currDate={dailyState.apiState.date}
+                format='YYYY-MM-DD'
+                onChange={onChange}
+                value={value}
+              />
+            )}
+          />
+          <SharedButton htmlType={"submit"} type='primary'>
+            Change date
+          </SharedButton>
+        </form>
+        <Outlet />
+        <Link to={"/"}>
+          <SharedButton type='primary'>Go back to home</SharedButton>
+        </Link>
       </section>
     </>
   );

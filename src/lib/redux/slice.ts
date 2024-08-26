@@ -9,9 +9,9 @@ export const getSliceReducer = (currSlice: ISlice) => {
   return currSlice.reducer;
 };
 
-export const addNewSlice = (
+export const addNewSlice = <StateType>(
   name: string,
-  initialState: Record<string, unknown>,
+  initialState: StateType,
   reducers: Record<string, any>
 ) => {
   const newSlice = createSlice({
